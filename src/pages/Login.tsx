@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '@/contexts/AuthContext';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -27,7 +27,25 @@ export function Login() {
       await login(email, password);
       navigate('/dashboard');
     } catch (err: any) {
-      setError('Email ou senha incorretos. Tente novamente.');
+      console.error('Erro ao fazer login:', err);
+      
+      let errorMessage = 'Erro ao fazer login. Tente novamente.';
+      
+      if (err.code === 'auth/user-not-found') {
+        errorMessage = 'Usuário não encontrado. Verifique o email.';
+      } else if (err.code === 'auth/wrong-password') {
+        errorMessage = 'Senha incorreta. Tente novamente.';
+      } else if (err.code === 'auth/invalid-email') {
+        errorMessage = 'Email inválido.';
+      } else if (err.code === 'auth/invalid-credential') {
+        errorMessage = 'Email ou senha incorretos.';
+      } else if (err.code === 'auth/too-many-requests') {
+        errorMessage = 'Muitas tentativas. Aguarde alguns minutos.';
+      } else if (err.message) {
+        errorMessage = err.message;
+      }
+      
+      setError(errorMessage);
     } finally {
       setLoading(false);
     }
@@ -107,8 +125,30 @@ export function Login() {
               </Button>
             </form>
 
-            <div className="mt-4 text-center text-sm text-slate-500">
-              <p>Demo: admin@deposito.com / 123456</p>
+            <div className="mt-6 space-y-3">
+              <div className="relative">
+                <div className="absolute inset-0 flex items-center">
+                  <div className="w-full border-t border-slate-700"></div>
+                </div>
+                <div className="relative flex justify-center text-sm">
+                  <span className="px-2 bg-slate-800 text-slate-400">Primeiro acesso?</span>
+                </div>
+              </div>
+              
+              <Link to="/configuracao">
+                <Button
+                  type="button"
+                  variant="outline"
+                  className="w-full border-slate-600 text-slate-300 hover:bg-slate-700"
+                >
+                  Criar Primeiro Usuário
+                </Button>
+              </Link>
+              
+              <div className="text-center text-xs text-slate-500 mt-2">
+                <p>Credenciais padrão após configuração:</p>
+                <p className="text-slate-400 mt-1">admin@deposito.com / 123456</p>
+              </div>
             </div>
           </CardContent>
         </Card>
