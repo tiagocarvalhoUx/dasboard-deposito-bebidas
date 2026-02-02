@@ -29,7 +29,7 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Trash2, Eye, ShoppingCart, Wallet, X } from "lucide-react";
+import { Plus, Search, Eye, ShoppingCart, Wallet, X } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { formatDate, formatDateTime } from "@/utils/dateHelpers";
@@ -79,7 +79,7 @@ export function Vendas() {
     .filter(p => 
       produtoSearch === "" || 
       p.nome.toLowerCase().includes(produtoSearch.toLowerCase()) ||
-      p.codigoBarras?.toLowerCase().includes(produtoSearch.toLowerCase())
+      p.codigo.toLowerCase().includes(produtoSearch.toLowerCase())
     );
 
   const addItem = () => {

@@ -68,9 +68,8 @@ function criarAbaVendas(
   ];
 
   const startRow = 5; // Linha onde começam os dados
-  const rows = vendas.map((venda, index) => {
+  const rows = vendas.map((venda) => {
     const dataVenda = convertFirestoreDate(venda.dataVenda);
-    const rowNum = startRow + index + 1;
 
     return [
       venda.id,
@@ -171,7 +170,6 @@ function criarAbaVendas(
   ];
 
   // Aplicar formato de moeda nas colunas de valores
-  const range = XLSX.utils.decode_range(ws["!ref"] || "A1");
   for (let R = startRow; R <= totalRow; R++) {
     [8, 9, 10].forEach((C) => {
       // Colunas I, J, K (Subtotal, Desconto, Total)
@@ -188,7 +186,7 @@ function criarAbaVendas(
 function criarAbaResumoVendas(
   vendas: Venda[],
   periodo: string,
-  dataGeracao: string
+  dataGeracao: string,
 ): XLSX.WorkSheet {
   const vendasPorFormaPagamento = agruparPor(vendas, "formaPagamento");
   const vendasPorVendedor = agruparPor(vendas, "vendedorNome");
@@ -199,17 +197,9 @@ function criarAbaResumoVendas(
   const ticketMedio = totalVendas > 0 ? valorTotal / totalVendas : 0;
 
   const rows: any[] = [
-    [
-      "═══════════════════════════════════════════════════════════",
-      "",
-      "",
-    ],
+    ["═══════════════════════════════════════════════════════════", "", ""],
     ["                    📊 DASHBOARD DE VENDAS                   ", "", ""],
-    [
-      "═══════════════════════════════════════════════════════════",
-      "",
-      "",
-    ],
+    ["═══════════════════════════════════════════════════════════", "", ""],
     [`📅 Período: ${periodo}`, "", ""],
     [`📆 Gerado em: ${dataGeracao}`, "", ""],
     ["", "", ""],
@@ -220,11 +210,7 @@ function criarAbaResumoVendas(
     ["Faturamento Total", valorTotal, ""],
     ["Ticket Médio", ticketMedio, ""],
     ["", "", ""],
-    [
-      "═══════════════ VENDAS POR FORMA DE PAGAMENTO ═══════════════",
-      "",
-      "",
-    ],
+    ["═══════════════ VENDAS POR FORMA DE PAGAMENTO ═══════════════", "", ""],
     ["", "", ""],
     ["💳 Forma de Pagamento", "Quantidade", "💰 Valor Total"],
   ];
@@ -233,7 +219,7 @@ function criarAbaResumoVendas(
     .sort(
       ([, a], [, b]) =>
         b.reduce((s, v: Venda) => s + v.total, 0) -
-        a.reduce((s, v: Venda) => s + v.total, 0)
+        a.reduce((s, v: Venda) => s + v.total, 0),
     )
     .forEach(([forma, itens]) => {
       rows.push([
@@ -247,14 +233,14 @@ function criarAbaResumoVendas(
     ["", "", ""],
     ["═══════════════ PERFORMANCE POR VENDEDOR ═══════════════", "", ""],
     ["", "", ""],
-    ["👤 Vendedor", "Quantidade", "💰 Valor Total"]
+    ["👤 Vendedor", "Quantidade", "💰 Valor Total"],
   );
 
   Object.entries(vendasPorVendedor)
     .sort(
       ([, a], [, b]) =>
         b.reduce((s, v: Venda) => s + v.total, 0) -
-        a.reduce((s, v: Venda) => s + v.total, 0)
+        a.reduce((s, v: Venda) => s + v.total, 0),
     )
     .forEach(([vendedor, itens]) => {
       rows.push([
@@ -268,7 +254,7 @@ function criarAbaResumoVendas(
     ["", "", ""],
     ["═══════════════ VENDAS DIÁRIAS ═══════════════", "", ""],
     ["", "", ""],
-    ["📅 Data", "Quantidade", "💰 Valor Total"]
+    ["📅 Data", "Quantidade", "💰 Valor Total"],
   );
 
   Object.entries(vendasPorDia)
@@ -304,7 +290,7 @@ function criarAbaResumoVendas(
 
 function criarAbaEstoque(
   produtos: Produto[],
-  dataGeracao: string
+  dataGeracao: string,
 ): XLSX.WorkSheet {
   const startRow = 4;
   const headers = [
@@ -323,9 +309,10 @@ function criarAbaEstoque(
 
   const rows = produtos.map((p, index) => {
     const rowNum = startRow + index + 1;
-    const margemLucro = p.precoCusto > 0 
-      ? ((p.precoVenda - p.precoCusto) / p.precoCusto) * 100 
-      : 0;
+    const margemLucro =
+      p.precoCusto > 0
+        ? ((p.precoVenda - p.precoCusto) / p.precoCusto) * 100
+        : 0;
 
     return [
       p.codigo,
@@ -344,8 +331,32 @@ function criarAbaEstoque(
 
   const totalRow = startRow + produtos.length + 1;
   const dataRows = [
-    ["═══════════════ 📦 RELATÓRIO DE ESTOQUE ═══════════════", "", "", "", "", "", "", "", "", "", ""],
-    [`📆 Data de Geração: ${dataGeracao}`, "", "", "", "", "", "", "", "", "", ""],
+    [
+      "═══════════════ 📦 RELATÓRIO DE ESTOQUE ═══════════════",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+    ],
+    [
+      `📆 Data de Geração: ${dataGeracao}`,
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+      "",
+    ],
     ["", "", "", "", "", "", "", "", "", "", ""],
     headers,
     ...rows,
@@ -381,7 +392,6 @@ function criarAbaEstoque(
   ];
 
   // Aplicar formato
-  const range = XLSX.utils.decode_range(ws["!ref"] || "A1");
   for (let R = startRow; R <= totalRow; R++) {
     // Preço Custo (E)
     const cellE = ws[XLSX.utils.encode_cell({ r: R, c: 4 })];
@@ -426,7 +436,7 @@ function criarAbaProdutosMaisVendidos(vendas: Venda[]): XLSX.WorkSheet {
 
   // Ordenar por quantidade vendida
   const topProdutos = Object.values(produtosVendidos).sort(
-    (a, b) => b.quantidade - a.quantidade
+    (a, b) => b.quantidade - a.quantidade,
   );
 
   const rows: any[] = [
@@ -438,7 +448,14 @@ function criarAbaProdutosMaisVendidos(vendas: Venda[]): XLSX.WorkSheet {
   ];
 
   topProdutos.forEach((produto, index) => {
-    const medalha = index === 0 ? "🥇" : index === 1 ? "🥈" : index === 2 ? "🥉" : `${index + 1}º`;
+    const medalha =
+      index === 0
+        ? "🥇"
+        : index === 1
+          ? "🥈"
+          : index === 2
+            ? "🥉"
+            : `${index + 1}º`;
     rows.push([medalha, produto.nome, produto.quantidade, produto.total]);
   });
 
@@ -459,16 +476,16 @@ function criarAbaProdutosMaisVendidos(vendas: Venda[]): XLSX.WorkSheet {
 
 function criarAbaAlertasEstoque(
   produtos: Produto[],
-  dataGeracao: string
+  dataGeracao: string,
 ): XLSX.WorkSheet {
   const produtosBaixoEstoque = produtos.filter(
-    (p) => p.quantidadeEstoque <= p.quantidadeMinima
+    (p) => p.quantidadeEstoque <= p.quantidadeMinima,
   );
   const produtosEmFalta = produtos.filter((p) => p.quantidadeEstoque === 0);
   const produtosAlerta = produtos.filter(
     (p) =>
       p.quantidadeEstoque > 0 &&
-      p.quantidadeEstoque <= p.quantidadeMinima * 1.5
+      p.quantidadeEstoque <= p.quantidadeMinima * 1.5,
   );
 
   const rows: any[] = [
@@ -500,17 +517,11 @@ function criarAbaAlertasEstoque(
   rows.push(
     ["", "", "", ""],
     ["═══════════════ 🟡 ESTOQUE BAIXO ═══════════════", "", "", ""],
-    ["", "", "", ""]
+    ["", "", "", ""],
   );
 
   if (produtosBaixoEstoque.length > 0) {
-    rows.push([
-      "Código",
-      "Produto",
-      "Atual",
-      "Mínimo",
-      "Diferença",
-    ]);
+    rows.push(["Código", "Produto", "Atual", "Mínimo", "Diferença"]);
     produtosBaixoEstoque.forEach((p) => {
       rows.push([
         p.codigo,
@@ -525,7 +536,13 @@ function criarAbaAlertasEstoque(
   }
 
   const ws = XLSX.utils.aoa_to_sheet(rows);
-  ws["!cols"] = [{ wch: 12 }, { wch: 35 }, { wch: 12 }, { wch: 20 }, { wch: 12 }];
+  ws["!cols"] = [
+    { wch: 12 },
+    { wch: 35 },
+    { wch: 12 },
+    { wch: 20 },
+    { wch: 12 },
+  ];
 
   return ws;
 }
@@ -555,12 +572,8 @@ function agruparPorData(vendas: Venda[]): Record<string, Venda[]> {
       result[groupKey].push(venda);
       return result;
     },
-    {} as Record<string, Venda[]>
+    {} as Record<string, Venda[]>,
   );
-}
-
-function formatarMoeda(valor: number): string {
-  return `R$ ${valor.toFixed(2).replace(".", ",")}`;
 }
 
 function formatarFormaPagamento(forma: string): string {

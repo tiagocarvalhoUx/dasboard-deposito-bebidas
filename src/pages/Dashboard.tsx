@@ -1,23 +1,18 @@
-import { useDashboard } from '@/hooks/useDashboard';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Loader2 } from 'lucide-react';
-import { 
-  ShoppingCart, 
-  Package, 
+import { useDashboard } from "@/hooks/useDashboard";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import { Loader2 } from "lucide-react";
+import {
+  ShoppingCart,
+  Package,
   DollarSign,
   AlertTriangle,
   Calendar,
-  ExternalLink,
-  Plus,
-  FileText
-} from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { useNavigate } from 'react-router-dom';
+} from "lucide-react";
 
 export function Dashboard() {
-  const { metrics, vendasRecentes, produtosBaixoEstoque, loading } = useDashboard();
-  const navigate = useNavigate();
+  const { metrics, vendasRecentes, produtosBaixoEstoque, loading } =
+    useDashboard();
 
   if (loading) {
     return (
@@ -28,9 +23,9 @@ export function Dashboard() {
   }
 
   const formatCurrency = (value: number) => {
-    return new Intl.NumberFormat('pt-BR', {
-      style: 'currency',
-      currency: 'BRL'
+    return new Intl.NumberFormat("pt-BR", {
+      style: "currency",
+      currency: "BRL",
     }).format(value);
   };
 
@@ -53,7 +48,9 @@ export function Dashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold truncate">{metrics.vendasHoje}</div>
+            <div className="text-3xl font-bold truncate">
+              {metrics.vendasHoje}
+            </div>
             <p className="text-sm text-slate-600 mt-2 font-medium truncate">
               {formatCurrency(metrics.totalVendasHoje)}
             </p>
@@ -70,7 +67,9 @@ export function Dashboard() {
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold truncate">{metrics.vendasMes}</div>
+            <div className="text-3xl font-bold truncate">
+              {metrics.vendasMes}
+            </div>
             <p className="text-sm text-slate-600 mt-2 font-medium truncate">
               {formatCurrency(metrics.totalVendasMes)}
             </p>
@@ -91,28 +90,41 @@ export function Dashboard() {
               {formatCurrency(metrics.totalVendasMes)}
             </div>
             <p className="text-xs text-slate-600 mt-2 font-medium truncate">
-              Ticket médio: {metrics.vendasMes > 0 
-                ? formatCurrency(metrics.totalVendasMes / metrics.vendasMes) 
+              Ticket médio:{" "}
+              {metrics.vendasMes > 0
+                ? formatCurrency(metrics.totalVendasMes / metrics.vendasMes)
                 : formatCurrency(0)}
             </p>
           </CardContent>
         </Card>
 
-        <Card className={`border-l-4 hover:shadow-lg transition-shadow overflow-hidden ${metrics.produtosEstoqueBaixo > 0 ? 'border-l-red-500' : 'border-l-emerald-500'}`}>
+        <Card
+          className={`border-l-4 hover:shadow-lg transition-shadow overflow-hidden ${metrics.produtosEstoqueBaixo > 0 ? "border-l-red-500" : "border-l-emerald-500"}`}
+        >
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <CardTitle className="text-sm font-medium text-slate-500">
               Estoque Baixo
             </CardTitle>
-            <div className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
-              metrics.produtosEstoqueBaixo > 0 ? 'bg-red-100' : 'bg-emerald-100'
-            }`}>
-              <Package className={`w-6 h-6 ${
-                metrics.produtosEstoqueBaixo > 0 ? 'text-red-600' : 'text-emerald-600'
-              }`} />
+            <div
+              className={`w-12 h-12 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                metrics.produtosEstoqueBaixo > 0
+                  ? "bg-red-100"
+                  : "bg-emerald-100"
+              }`}
+            >
+              <Package
+                className={`w-6 h-6 ${
+                  metrics.produtosEstoqueBaixo > 0
+                    ? "text-red-600"
+                    : "text-emerald-600"
+                }`}
+              />
             </div>
           </CardHeader>
           <CardContent>
-            <div className="text-3xl font-bold truncate">{metrics.produtosEstoqueBaixo}</div>
+            <div className="text-3xl font-bold truncate">
+              {metrics.produtosEstoqueBaixo}
+            </div>
             <p className="text-sm text-slate-600 mt-2 font-medium truncate">
               de {metrics.totalProdutos} produtos
             </p>
@@ -132,13 +144,15 @@ export function Dashboard() {
           <CardContent>
             <div className="space-y-2">
               {produtosBaixoEstoque.slice(0, 5).map((produto) => (
-                <div 
-                  key={produto.id} 
+                <div
+                  key={produto.id}
                   className="flex items-center justify-between p-3 bg-white rounded-lg border border-red-100"
                 >
                   <div>
                     <p className="font-medium text-slate-900">{produto.nome}</p>
-                    <p className="text-sm text-slate-500">Código: {produto.codigo}</p>
+                    <p className="text-sm text-slate-500">
+                      Código: {produto.codigo}
+                    </p>
                   </div>
                   <div className="text-right">
                     <Badge variant="destructive" className="mb-1">
@@ -176,21 +190,36 @@ export function Dashboard() {
               <table className="w-full">
                 <thead>
                   <tr className="border-b border-slate-200">
-                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">Nº</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">Cliente</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">Data</th>
-                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">Pagamento</th>
-                    <th className="text-right py-3 px-4 text-sm font-medium text-slate-500">Total</th>
-                    <th className="text-center py-3 px-4 text-sm font-medium text-slate-500">Status</th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">
+                      Nº
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">
+                      Cliente
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">
+                      Data
+                    </th>
+                    <th className="text-left py-3 px-4 text-sm font-medium text-slate-500">
+                      Pagamento
+                    </th>
+                    <th className="text-right py-3 px-4 text-sm font-medium text-slate-500">
+                      Total
+                    </th>
+                    <th className="text-center py-3 px-4 text-sm font-medium text-slate-500">
+                      Status
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {vendasRecentes.map((venda) => (
-                    <tr key={venda.id} className="border-b border-slate-100 hover:bg-slate-50">
+                    <tr
+                      key={venda.id}
+                      className="border-b border-slate-100 hover:bg-slate-50"
+                    >
                       <td className="py-3 px-4 text-sm">{venda.numero}</td>
                       <td className="py-3 px-4 text-sm">{venda.clienteNome}</td>
                       <td className="py-3 px-4 text-sm">
-                        {new Date(venda.dataVenda).toLocaleDateString('pt-BR')}
+                        {new Date(venda.dataVenda).toLocaleDateString("pt-BR")}
                       </td>
                       <td className="py-3 px-4 text-sm">
                         {formatarFormaPagamento(venda.formaPagamento)}
@@ -217,33 +246,33 @@ export function Dashboard() {
 
 function formatarFormaPagamento(forma: string): string {
   const map: Record<string, string> = {
-    'dinheiro': 'Dinheiro',
-    'cartao_credito': 'Cartão Crédito',
-    'cartao_debito': 'Cartão Débito',
-    'pix': 'PIX',
-    'prazo': 'A Prazo'
+    dinheiro: "Dinheiro",
+    cartao_credito: "Cartão Crédito",
+    cartao_debito: "Cartão Débito",
+    pix: "PIX",
+    prazo: "A Prazo",
   };
   return map[forma] || forma;
 }
 
 function formatarStatus(status: string): string {
   const map: Record<string, string> = {
-    'concluida': 'Concluída',
-    'pendente': 'Pendente',
-    'cancelada': 'Cancelada'
+    concluida: "Concluída",
+    pendente: "Pendente",
+    cancelada: "Cancelada",
   };
   return map[status] || status;
 }
 
 function getStatusBadgeClass(status: string): string {
   switch (status) {
-    case 'concluida':
-      return 'bg-emerald-100 text-emerald-800 hover:bg-emerald-100';
-    case 'pendente':
-      return 'bg-amber-100 text-amber-800 hover:bg-amber-100';
-    case 'cancelada':
-      return 'bg-red-100 text-red-800 hover:bg-red-100';
+    case "concluida":
+      return "bg-emerald-100 text-emerald-800 hover:bg-emerald-100";
+    case "pendente":
+      return "bg-amber-100 text-amber-800 hover:bg-amber-100";
+    case "cancelada":
+      return "bg-red-100 text-red-800 hover:bg-red-100";
     default:
-      return 'bg-slate-100 text-slate-800';
+      return "bg-slate-100 text-slate-800";
   }
 }
