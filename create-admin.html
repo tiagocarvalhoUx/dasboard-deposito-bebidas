@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Criar Admin</title>
+  <script type="module">
+    import { initializeApp } from 'https://www.gstatic.com/firebasejs/11.2.0/firebase-app.js';
+    import { getAuth, createUserWithEmailAndPassword } from 'https://www.gstatic.com/firebasejs/11.2.0/firebase-auth.js';
+    import { getFirestore, doc, setDoc } from 'https://www.gstatic.com/firebasejs/11.2.0/firebase-firestore.js';
+
+    const firebaseConfig = {
+      apiKey: "AIzaSyDDg9ysie1TWrB7onNAMF_LGRBHBVIe9Iw",
+      authDomain: "dashboard-deposito.firebaseapp.com",
+      projectId: "dashboard-deposito",
+      storageBucket: "dashboard-deposito.firebasestorage.app",
+      messagingSenderId: "922364647878",
+      appId: "1:922364647878:web:12f8e81e8c968cd7f8bac7"
+    };
+
+    const app = initializeApp(firebaseConfig);
+    const auth = getAuth(app);
+    const db = getFirestore(app);
+
+    window.createAdmin = async () => {
+      try {
+        const email = 'admin@deposito.com';
+        const password = '123456';
+        
+        // Criar usuário no Authentication
+        const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+        const uid = userCredential.user.uid;
+        
+        // Criar documento no Firestore
+        await setDoc(doc(db, 'usuarios', uid), {
+          email: email,
+          nome: 'Administrador',
+          perfil: 'admin',
+          ativo: true,
+          createdAt: new Date()
+        });
+        
+        document.getElementById('result').innerHTML = '✅ Admin criado com sucesso!<br>Email: admin@deposito.com<br>Senha: 123456';
+        document.getElementById('result').style.color = 'green';
+      } catch (error) {
+        document.getElementById('result').innerHTML = '❌ Erro: ' + error.message;
+        document.getElementById('result').style.color = 'red';
+      }
+    };
+  </script>
+</head>
+<body style="font-family: Arial; padding: 50px; text-align: center;">
+  <h1>Criar Usuário Administrador</h1>
+  <button onclick="createAdmin()" style="padding: 15px 30px; font-size: 16px; cursor: pointer;">
+    Criar Admin
+  </button>
+  <div id="result" style="margin-top: 30px; font-size: 18px;"></div>
+</body>
+</html>
