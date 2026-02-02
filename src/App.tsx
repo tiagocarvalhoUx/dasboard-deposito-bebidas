@@ -1,14 +1,15 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
-import { AuthProvider } from '@/contexts/AuthContext';
-import { PrivateRoute } from '@/components/auth/PrivateRoute';
-import { Layout } from '@/components/dashboard/Layout';
-import { Login } from '@/pages/Login';
-import { Dashboard } from '@/pages/Dashboard';
-import { Vendas } from '@/pages/Vendas';
-import { Estoque } from '@/pages/Estoque';
-import { Relatorios } from '@/pages/Relatorios';
-import { Usuarios } from '@/pages/Usuarios';
-import { Configuracao } from '@/pages/Configuracao';
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { AuthProvider } from "@/contexts/AuthContext";
+import { PrivateRoute } from "@/components/auth/PrivateRoute";
+import { Layout } from "@/components/dashboard/Layout";
+import { Login } from "@/pages/Login";
+import { Dashboard } from "@/pages/Dashboard";
+import { Vendas } from "@/pages/Vendas";
+import { Estoque } from "@/pages/Estoque";
+import { Relatorios } from "@/pages/Relatorios";
+import { Usuarios } from "@/pages/Usuarios";
+import { Configuracao } from "@/pages/Configuracao";
+import { Diagnostico } from "@/pages/Diagnostico";
 
 function App() {
   return (
@@ -17,6 +18,7 @@ function App() {
         <Routes>
           <Route path="/login" element={<Login />} />
           <Route path="/configuracao" element={<Configuracao />} />
+          <Route path="/diagnostico" element={<Diagnostico />} />
           <Route
             path="/"
             element={

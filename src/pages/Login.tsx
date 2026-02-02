@@ -145,6 +145,16 @@ export function Login() {
                 </Button>
               </Link>
               
+              <Link to="/diagnostico">
+                <Button
+                  type="button"
+                  variant="ghost"
+                  className="w-full text-slate-400 hover:text-slate-300 hover:bg-slate-700/50 text-xs"
+                >
+                  🔍 Verificar Conexão com Firebase
+                </Button>
+              </Link>
+              
               <div className="text-center text-xs text-slate-500 mt-2">
                 <p>Credenciais padrão após configuração:</p>
                 <p className="text-slate-400 mt-1">admin@deposito.com / 123456</p>

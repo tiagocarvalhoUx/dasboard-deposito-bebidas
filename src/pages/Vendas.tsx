@@ -40,9 +40,28 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Eye, ShoppingCart, Wallet, X, Trash2 } from "lucide-react";
-import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
+import {
+  Plus,
+  Search,
+  Eye,
+  ShoppingCart,
+  Wallet,
+  X,
+  Trash2,
+} from "lucide-react";
+import {
+  Command,
+  CommandEmpty,
+  CommandGroup,
+  CommandInput,
+  CommandItem,
+  CommandList,
+} from "@/components/ui/command";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
 import { formatDate, formatDateTime } from "@/utils/dateHelpers";
 
 export function Vendas() {
@@ -86,11 +105,12 @@ export function Vendas() {
   const troco = valorPago ? parseFloat(valorPago) - total : 0;
 
   const produtosFiltrados = produtos
-    .filter(p => p.ativo && p.quantidadeEstoque > 0)
-    .filter(p => 
-      produtoSearch === "" || 
-      p.nome.toLowerCase().includes(produtoSearch.toLowerCase()) ||
-      p.codigo.toLowerCase().includes(produtoSearch.toLowerCase())
+    .filter((p) => p.ativo && p.quantidadeEstoque > 0)
+    .filter(
+      (p) =>
+        produtoSearch === "" ||
+        p.nome.toLowerCase().includes(produtoSearch.toLowerCase()) ||
+        p.codigo.toLowerCase().includes(produtoSearch.toLowerCase()),
     );
 
   const addItem = () => {
@@ -210,18 +230,18 @@ export function Vendas() {
     try {
       // Devolver os produtos ao estoque
       for (const item of venda.itens) {
-        const produto = produtos.find(p => p.id === item.produtoId);
+        const produto = produtos.find((p) => p.id === item.produtoId);
         if (produto) {
           await updateProduto(produto.id, {
             quantidadeEstoque: produto.quantidadeEstoque + item.quantidade,
           });
         }
       }
-      
+
       // Excluir a venda
       await remove(venda.id);
     } catch (error) {
-      console.error('Erro ao excluir venda:', error);
+      console.error("Erro ao excluir venda:", error);
     }
   };
   return (
@@ -247,15 +267,20 @@ export function Vendas() {
                 Nova Venda
               </DialogTitle>
             </DialogHeader>
-            
-            <form onSubmit={handleSubmit} className="flex-1 overflow-hidden flex flex-col">
+
+            <form
+              onSubmit={handleSubmit}
+              className="flex-1 overflow-hidden flex flex-col"
+            >
               <div className="flex-1 overflow-y-auto space-y-4 pr-2">
                 {/* Cliente Info - Compacto */}
                 <Card className="bg-slate-50">
                   <CardContent className="pt-4">
                     <div className="grid grid-cols-3 gap-3">
                       <div className="col-span-2">
-                        <Label className="text-xs font-semibold text-slate-600">Cliente</Label>
+                        <Label className="text-xs font-semibold text-slate-600">
+                          Cliente
+                        </Label>
                         <Input
                           value={clienteNome}
                           onChange={(e) => setClienteNome(e.target.value)}
@@ -265,7 +290,9 @@ export function Vendas() {
                         />
                       </div>
                       <div>
-                        <Label className="text-xs font-semibold text-slate-600">Telefone</Label>
+                        <Label className="text-xs font-semibold text-slate-600">
+                          Telefone
+                        </Label>
                         <Input
                           value={clienteTelefone}
                           onChange={(e) => setClienteTelefone(e.target.value)}
@@ -284,7 +311,10 @@ export function Vendas() {
                       Adicionar Produto
                     </Label>
                     <div className="flex gap-2">
-                      <Popover open={openProdutoCombobox} onOpenChange={setOpenProdutoCombobox}>
+                      <Popover
+                        open={openProdutoCombobox}
+                        onOpenChange={setOpenProdutoCombobox}
+                      >
                         <PopoverTrigger asChild>
                           <Button
                             variant="outline"
@@ -292,20 +322,23 @@ export function Vendas() {
                             className="flex-1 justify-between bg-white hover:bg-slate-50"
                           >
                             {selectedProduto
-                              ? produtos.find((p) => p.id === selectedProduto)?.nome
+                              ? produtos.find((p) => p.id === selectedProduto)
+                                  ?.nome
                               : "🔍 Buscar produto..."}
                             <Search className="ml-2 h-4 w-4 shrink-0 opacity-50" />
                           </Button>
                         </PopoverTrigger>
                         <PopoverContent className="w-[500px] p-0">
                           <Command>
-                            <CommandInput 
-                              placeholder="Digite nome ou código..." 
+                            <CommandInput
+                              placeholder="Digite nome ou código..."
                               value={produtoSearch}
                               onValueChange={setProdutoSearch}
                             />
                             <CommandList>
-                              <CommandEmpty>Nenhum produto encontrado.</CommandEmpty>
+                              <CommandEmpty>
+                                Nenhum produto encontrado.
+                              </CommandEmpty>
                               <CommandGroup>
                                 {produtosFiltrados.map((produto) => (
                                   <CommandItem
@@ -318,7 +351,9 @@ export function Vendas() {
                                     className="flex justify-between"
                                   >
                                     <div className="flex-1">
-                                      <div className="font-medium">{produto.nome}</div>
+                                      <div className="font-medium">
+                                        {produto.nome}
+                                      </div>
                                       <div className="text-xs text-slate-500">
                                         Estoque: {produto.quantidadeEstoque}un
                                       </div>
@@ -333,7 +368,7 @@ export function Vendas() {
                           </Command>
                         </PopoverContent>
                       </Popover>
-                      
+
                       <div className="flex items-center gap-2">
                         <Input
                           ref={quantidadeInputRef}
@@ -347,9 +382,9 @@ export function Vendas() {
                           placeholder="Qtd"
                           className="w-20 text-center font-semibold"
                         />
-                        <Button 
-                          type="button" 
-                          onClick={addItem} 
+                        <Button
+                          type="button"
+                          onClick={addItem}
                           className="bg-amber-500 hover:bg-amber-600"
                           disabled={!selectedProduto}
                         >
@@ -372,9 +407,12 @@ export function Vendas() {
                             className="flex items-center justify-between p-3 bg-slate-50 rounded-lg hover:bg-slate-100 transition-colors"
                           >
                             <div className="flex-1">
-                              <div className="font-medium text-slate-900">{item.produtoNome}</div>
+                              <div className="font-medium text-slate-900">
+                                {item.produtoNome}
+                              </div>
                               <div className="text-sm text-slate-500">
-                                {item.quantidade}x {formatCurrency(item.precoUnitario)}
+                                {item.quantidade}x{" "}
+                                {formatCurrency(item.precoUnitario)}
                               </div>
                             </div>
                             <div className="flex items-center gap-4">
@@ -403,27 +441,39 @@ export function Vendas() {
                   <CardContent className="pt-4 space-y-3">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <Label className="text-slate-400 text-xs">Forma de Pagamento</Label>
-                        <Select 
-                          value={formaPagamento} 
-                          onValueChange={(v) => setFormaPagamento(v as Venda["formaPagamento"])}
+                        <Label className="text-slate-400 text-xs">
+                          Forma de Pagamento
+                        </Label>
+                        <Select
+                          value={formaPagamento}
+                          onValueChange={(v) =>
+                            setFormaPagamento(v as Venda["formaPagamento"])
+                          }
                         >
                           <SelectTrigger className="bg-slate-800 border-slate-700 mt-1">
                             <SelectValue />
                           </SelectTrigger>
                           <SelectContent>
-                            <SelectItem value="dinheiro">💵 Dinheiro</SelectItem>
-                            <SelectItem value="cartao_credito">💳 Cartão Crédito</SelectItem>
-                            <SelectItem value="cartao_debito">💳 Cartão Débito</SelectItem>
+                            <SelectItem value="dinheiro">
+                              💵 Dinheiro
+                            </SelectItem>
+                            <SelectItem value="cartao_credito">
+                              💳 Cartão Crédito
+                            </SelectItem>
+                            <SelectItem value="cartao_debito">
+                              💳 Cartão Débito
+                            </SelectItem>
                             <SelectItem value="pix">📱 PIX</SelectItem>
                             <SelectItem value="prazo">📝 A Prazo</SelectItem>
                           </SelectContent>
                         </Select>
                       </div>
-                      
+
                       {formaPagamento === "dinheiro" && (
                         <div>
-                          <Label className="text-slate-400 text-xs">Valor Pago</Label>
+                          <Label className="text-slate-400 text-xs">
+                            Valor Pago
+                          </Label>
                           <div className="relative mt-1">
                             <Wallet className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
                             <Input
@@ -442,27 +492,34 @@ export function Vendas() {
                     <div className="border-t border-slate-700 pt-3 space-y-2">
                       <div className="flex justify-between text-lg">
                         <span className="text-slate-400">Subtotal:</span>
-                        <span className="font-semibold">{formatCurrency(subtotal)}</span>
+                        <span className="font-semibold">
+                          {formatCurrency(subtotal)}
+                        </span>
                       </div>
                       <div className="flex justify-between text-2xl font-bold">
                         <span className="text-amber-400">TOTAL:</span>
-                        <span className="text-amber-400">{formatCurrency(total)}</span>
+                        <span className="text-amber-400">
+                          {formatCurrency(total)}
+                        </span>
                       </div>
-                      {formaPagamento === "dinheiro" && parseFloat(valorPago || "0") > 0 && (
-                        <div className="flex justify-between text-lg border-t border-slate-700 pt-2">
-                          <span className="text-emerald-400">Troco:</span>
-                          <span className="text-emerald-400 font-bold">
-                            {formatCurrency(Math.max(0, troco))}
-                          </span>
-                        </div>
-                      )}
+                      {formaPagamento === "dinheiro" &&
+                        parseFloat(valorPago || "0") > 0 && (
+                          <div className="flex justify-between text-lg border-t border-slate-700 pt-2">
+                            <span className="text-emerald-400">Troco:</span>
+                            <span className="text-emerald-400 font-bold">
+                              {formatCurrency(Math.max(0, troco))}
+                            </span>
+                          </div>
+                        )}
                     </div>
                   </CardContent>
                 </Card>
 
                 {/* Observações */}
                 <div>
-                  <Label className="text-sm text-slate-600">Observações (opcional)</Label>
+                  <Label className="text-sm text-slate-600">
+                    Observações (opcional)
+                  </Label>
                   <Input
                     value={observacoes}
                     onChange={(e) => setObservacoes(e.target.value)}
@@ -474,9 +531,9 @@ export function Vendas() {
 
               {/* Botões de Ação - Fixos no Bottom */}
               <div className="flex gap-3 pt-4 border-t mt-4">
-                <Button 
-                  type="button" 
-                  variant="outline" 
+                <Button
+                  type="button"
+                  variant="outline"
                   onClick={() => {
                     resetForm();
                     setIsDialogOpen(false);
@@ -485,9 +542,9 @@ export function Vendas() {
                 >
                   Cancelar
                 </Button>
-                <Button 
-                  type="submit" 
-                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-lg py-6" 
+                <Button
+                  type="submit"
+                  className="flex-1 bg-amber-500 hover:bg-amber-600 text-slate-900 font-bold text-lg py-6"
                   disabled={itens.length === 0}
                 >
                   <ShoppingCart className="w-5 h-5 mr-2" />
@@ -532,9 +589,7 @@ export function Vendas() {
                 <TableRow key={venda.id}>
                   <TableCell className="font-medium">{venda.numero}</TableCell>
                   <TableCell>{venda.clienteNome}</TableCell>
-                  <TableCell>
-                    {formatDate(venda.dataVenda)}
-                  </TableCell>
+                  <TableCell>{formatDate(venda.dataVenda)}</TableCell>
                   <TableCell>{venda.vendedorNome}</TableCell>
                   <TableCell>
                     {formatarFormaPagamento(venda.formaPagamento)}
@@ -551,125 +606,145 @@ export function Vendas() {
                     <div className="flex gap-2 justify-center">
                       <Dialog>
                         <DialogTrigger asChild>
-                          <Button variant="ghost" size="sm" title="Ver detalhes">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            title="Ver detalhes"
+                          >
                             <Eye className="w-4 h-4" />
                           </Button>
                         </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>
-                            Detalhes da Venda {venda.numero}
-                          </DialogTitle>
-                        </DialogHeader>
-                        <div className="space-y-4">
-                          <div className="grid grid-cols-2 gap-4 text-sm">
-                            <div>
-                              <span className="text-slate-500">Cliente:</span>
-                              <p className="font-medium">{venda.clienteNome}</p>
+                        <DialogContent>
+                          <DialogHeader>
+                            <DialogTitle>
+                              Detalhes da Venda {venda.numero}
+                            </DialogTitle>
+                          </DialogHeader>
+                          <div className="space-y-4">
+                            <div className="grid grid-cols-2 gap-4 text-sm">
+                              <div>
+                                <span className="text-slate-500">Cliente:</span>
+                                <p className="font-medium">
+                                  {venda.clienteNome}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-slate-500">
+                                  Telefone:
+                                </span>
+                                <p className="font-medium">
+                                  {venda.clienteTelefone || "-"}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-slate-500">Data:</span>
+                                <p className="font-medium">
+                                  {formatDateTime(venda.dataVenda)}
+                                </p>
+                              </div>
+                              <div>
+                                <span className="text-slate-500">
+                                  Vendedor:
+                                </span>
+                                <p className="font-medium">
+                                  {venda.vendedorNome}
+                                </p>
+                              </div>
                             </div>
-                            <div>
-                              <span className="text-slate-500">Telefone:</span>
-                              <p className="font-medium">
-                                {venda.clienteTelefone || "-"}
-                              </p>
-                            </div>
-                            <div>
-                              <span className="text-slate-500">Data:</span>
-                              <p className="font-medium">
-                                {formatDateTime(venda.dataVenda)}
-                              </p>
-                            </div>
-                            <div>
-                              <span className="text-slate-500">Vendedor:</span>
-                              <p className="font-medium">
-                                {venda.vendedorNome}
-                              </p>
-                            </div>
-                          </div>
 
-                          <div className="border rounded-lg">
-                            <Table>
-                              <TableHeader>
-                                <TableRow>
-                                  <TableHead>Produto</TableHead>
-                                  <TableHead className="text-right">
-                                    Qtd
-                                  </TableHead>
-                                  <TableHead className="text-right">
-                                    Preço
-                                  </TableHead>
-                                  <TableHead className="text-right">
-                                    Subtotal
-                                  </TableHead>
-                                </TableRow>
-                              </TableHeader>
-                              <TableBody>
-                                {venda.itens.map((item, idx) => (
-                                  <TableRow key={idx}>
-                                    <TableCell>{item.produtoNome}</TableCell>
-                                    <TableCell className="text-right">
-                                      {item.quantidade}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                      {formatCurrency(item.precoUnitario)}
-                                    </TableCell>
-                                    <TableCell className="text-right">
-                                      {formatCurrency(item.subtotal)}
-                                    </TableCell>
+                            <div className="border rounded-lg">
+                              <Table>
+                                <TableHeader>
+                                  <TableRow>
+                                    <TableHead>Produto</TableHead>
+                                    <TableHead className="text-right">
+                                      Qtd
+                                    </TableHead>
+                                    <TableHead className="text-right">
+                                      Preço
+                                    </TableHead>
+                                    <TableHead className="text-right">
+                                      Subtotal
+                                    </TableHead>
                                   </TableRow>
-                                ))}
-                              </TableBody>
-                            </Table>
-                          </div>
+                                </TableHeader>
+                                <TableBody>
+                                  {venda.itens.map((item, idx) => (
+                                    <TableRow key={idx}>
+                                      <TableCell>{item.produtoNome}</TableCell>
+                                      <TableCell className="text-right">
+                                        {item.quantidade}
+                                      </TableCell>
+                                      <TableCell className="text-right">
+                                        {formatCurrency(item.precoUnitario)}
+                                      </TableCell>
+                                      <TableCell className="text-right">
+                                        {formatCurrency(item.subtotal)}
+                                      </TableCell>
+                                    </TableRow>
+                                  ))}
+                                </TableBody>
+                              </Table>
+                            </div>
 
-                          <div className="flex justify-between items-center pt-4 border-t">
-                            <div>
-                              <span className="text-slate-500">
-                                Forma de Pagamento:
-                              </span>
-                              <p className="font-medium">
-                                {formatarFormaPagamento(venda.formaPagamento)}
-                              </p>
-                            </div>
-                            <div className="text-right">
-                              <span className="text-slate-500">Total:</span>
-                              <p className="text-2xl font-bold text-amber-600">
-                                {formatCurrency(venda.total)}
-                              </p>
+                            <div className="flex justify-between items-center pt-4 border-t">
+                              <div>
+                                <span className="text-slate-500">
+                                  Forma de Pagamento:
+                                </span>
+                                <p className="font-medium">
+                                  {formatarFormaPagamento(venda.formaPagamento)}
+                                </p>
+                              </div>
+                              <div className="text-right">
+                                <span className="text-slate-500">Total:</span>
+                                <p className="text-2xl font-bold text-amber-600">
+                                  {formatCurrency(venda.total)}
+                                </p>
+                              </div>
                             </div>
                           </div>
-                        </div>
-                      </DialogContent>
-                    </Dialog>
-                    
-                    <AlertDialog>
-                      <AlertDialogTrigger asChild>
-                        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50" title="Excluir venda">
-                          <Trash2 className="w-4 h-4" />
-                        </Button>
-                      </AlertDialogTrigger>
-                      <AlertDialogContent>
-                        <AlertDialogHeader>
-                          <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
-                          <AlertDialogDescription>
-                            Tem certeza que deseja excluir a venda <strong>{venda.numero}</strong>?
-                            <br />
-                            Os produtos serão devolvidos ao estoque.
-                            <br />
-                            <span className="text-red-600 font-semibold">Esta ação não pode ser desfeita.</span>
-                          </AlertDialogDescription>
-                        </AlertDialogHeader>
-                        <AlertDialogFooter>
-                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
-                          <AlertDialogAction
-                            onClick={() => handleDeleteVenda(venda)}
-                            className="bg-red-600 hover:bg-red-700"
+                        </DialogContent>
+                      </Dialog>
+
+                      <AlertDialog>
+                        <AlertDialogTrigger asChild>
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            className="text-red-600 hover:text-red-700 hover:bg-red-50"
+                            title="Excluir venda"
                           >
-                            Excluir
-                          </AlertDialogAction>
-                        </AlertDialogFooter>
-                      </AlertDialogContent>
-                    </AlertDialog>
+                            <Trash2 className="w-4 h-4" />
+                          </Button>
+                        </AlertDialogTrigger>
+                        <AlertDialogContent>
+                          <AlertDialogHeader>
+                            <AlertDialogTitle>
+                              Confirmar Exclusão
+                            </AlertDialogTitle>
+                            <AlertDialogDescription>
+                              Tem certeza que deseja excluir a venda{" "}
+                              <strong>{venda.numero}</strong>?
+                              <br />
+                              Os produtos serão devolvidos ao estoque.
+                              <br />
+                              <span className="text-red-600 font-semibold">
+                                Esta ação não pode ser desfeita.
+                              </span>
+                            </AlertDialogDescription>
+                          </AlertDialogHeader>
+                          <AlertDialogFooter>
+                            <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                            <AlertDialogAction
+                              onClick={() => handleDeleteVenda(venda)}
+                              className="bg-red-600 hover:bg-red-700"
+                            >
+                              Excluir
+                            </AlertDialogAction>
+                          </AlertDialogFooter>
+                        </AlertDialogContent>
+                      </AlertDialog>
                     </div>
                   </TableCell>
                 </TableRow>
