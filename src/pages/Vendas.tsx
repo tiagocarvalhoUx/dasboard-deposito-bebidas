@@ -15,6 +15,17 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+import {
   Select,
   SelectContent,
   SelectItem,
@@ -29,13 +40,13 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { Plus, Search, Eye, ShoppingCart, Wallet, X } from "lucide-react";
+import { Plus, Search, Eye, ShoppingCart, Wallet, X, Trash2 } from "lucide-react";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
 import { formatDate, formatDateTime } from "@/utils/dateHelpers";
 
 export function Vendas() {
-  const { data: vendas, add } = useCollection<Venda>("vendas");
+  const { data: vendas, add, remove } = useCollection<Venda>("vendas");
   const { data: produtos, update: updateProduto } =
     useCollection<Produto>("produtos");
   const { user } = useAuth();
@@ -195,7 +206,24 @@ export function Vendas() {
       currency: "BRL",
     }).format(value);
   };
-
+  const handleDeleteVenda = async (venda: Venda) => {
+    try {
+      // Devolver os produtos ao estoque
+      for (const item of venda.itens) {
+        const produto = produtos.find(p => p.id === item.produtoId);
+        if (produto) {
+          await updateProduto(produto.id, {
+            quantidadeEstoque: produto.quantidadeEstoque + item.quantidade,
+          });
+        }
+      }
+      
+      // Excluir a venda
+      await remove(venda.id);
+    } catch (error) {
+      console.error('Erro ao excluir venda:', error);
+    }
+  };
   return (
     <div className="space-y-6">
       <div className="flex items-center justify-between">
@@ -496,7 +524,7 @@ export function Vendas() {
                 <TableHead>Pagamento</TableHead>
                 <TableHead className="text-right">Total</TableHead>
                 <TableHead className="text-center">Status</TableHead>
-                <TableHead className="w-10"></TableHead>
+                <TableHead className="text-center">Ações</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
@@ -520,12 +548,13 @@ export function Vendas() {
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="ghost" size="sm">
-                          <Eye className="w-4 h-4" />
-                        </Button>
-                      </DialogTrigger>
+                    <div className="flex gap-2 justify-center">
+                      <Dialog>
+                        <DialogTrigger asChild>
+                          <Button variant="ghost" size="sm" title="Ver detalhes">
+                            <Eye className="w-4 h-4" />
+                          </Button>
+                        </DialogTrigger>
                       <DialogContent>
                         <DialogHeader>
                           <DialogTitle>
@@ -612,6 +641,36 @@ export function Vendas() {
                         </div>
                       </DialogContent>
                     </Dialog>
+                    
+                    <AlertDialog>
+                      <AlertDialogTrigger asChild>
+                        <Button variant="ghost" size="sm" className="text-red-600 hover:text-red-700 hover:bg-red-50" title="Excluir venda">
+                          <Trash2 className="w-4 h-4" />
+                        </Button>
+                      </AlertDialogTrigger>
+                      <AlertDialogContent>
+                        <AlertDialogHeader>
+                          <AlertDialogTitle>Confirmar Exclusão</AlertDialogTitle>
+                          <AlertDialogDescription>
+                            Tem certeza que deseja excluir a venda <strong>{venda.numero}</strong>?
+                            <br />
+                            Os produtos serão devolvidos ao estoque.
+                            <br />
+                            <span className="text-red-600 font-semibold">Esta ação não pode ser desfeita.</span>
+                          </AlertDialogDescription>
+                        </AlertDialogHeader>
+                        <AlertDialogFooter>
+                          <AlertDialogCancel>Cancelar</AlertDialogCancel>
+                          <AlertDialogAction
+                            onClick={() => handleDeleteVenda(venda)}
+                            className="bg-red-600 hover:bg-red-700"
+                          >
+                            Excluir
+                          </AlertDialogAction>
+                        </AlertDialogFooter>
+                      </AlertDialogContent>
+                    </AlertDialog>
+                    </div>
                   </TableCell>
                 </TableRow>
               ))}
