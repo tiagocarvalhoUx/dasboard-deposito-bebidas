@@ -1,29 +1,27 @@
-import { useState } from 'react';
-import { NavLink, useNavigate, Outlet } from 'react-router-dom';
-import { useAuth } from '@/contexts/AuthContext';
-import { Button } from '@/components/ui/button';
-import { 
-  Wine, 
-  LayoutDashboard, 
-  ShoppingCart, 
-  Package, 
-  FileText, 
-  Users, 
+import { useState } from "react";
+import { NavLink, useNavigate, Outlet } from "react-router-dom";
+import { useAuth } from "@/contexts/AuthContext";
+import { Button } from "@/components/ui/button";
+import {
+  Wine,
+  LayoutDashboard,
+  ShoppingCart,
+  Package,
+  FileText,
+  Users,
   LogOut,
   Menu,
-  X
-} from 'lucide-react';
+  X,
+} from "lucide-react";
 
 const menuItems = [
-  { path: '/dashboard', label: 'Dashboard', icon: LayoutDashboard },
-  { path: '/vendas', label: 'Vendas', icon: ShoppingCart },
-  { path: '/estoque', label: 'Estoque', icon: Package },
-  { path: '/relatorios', label: 'Relatórios', icon: FileText },
+  { path: "/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/vendas", label: "Vendas", icon: ShoppingCart },
+  { path: "/estoque", label: "Estoque", icon: Package },
+  { path: "/relatorios", label: "Relatórios", icon: FileText },
 ];
 
-const adminMenuItems = [
-  { path: '/usuarios', label: 'Usuários', icon: Users },
-];
+const adminMenuItems = [{ path: "/usuarios", label: "Usuários", icon: Users }];
 
 export function Layout() {
   const [sidebarOpen, setSidebarOpen] = useState(false);
@@ -32,7 +30,7 @@ export function Layout() {
 
   const handleLogout = async () => {
     await logout();
-    navigate('/login');
+    navigate("/login");
   };
 
   const allMenuItems = isAdmin ? [...menuItems, ...adminMenuItems] : menuItems;
@@ -61,8 +59,8 @@ export function Layout() {
               className={({ isActive }: { isActive: boolean }) =>
                 `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-amber-500 text-slate-900 font-medium'
-                    : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                    ? "bg-amber-500 text-slate-900 font-medium"
+                    : "text-slate-300 hover:bg-slate-800 hover:text-white"
                 }`
               }
             >
@@ -76,7 +74,7 @@ export function Layout() {
           <div className="flex items-center gap-3 px-4 py-3 mb-2">
             <div className="w-8 h-8 bg-slate-700 rounded-full flex items-center justify-center">
               <span className="text-sm font-medium">
-                {user?.nome?.charAt(0).toUpperCase() || 'U'}
+                {user?.nome?.charAt(0).toUpperCase() || "U"}
               </span>
             </div>
             <div className="flex-1 min-w-0">
@@ -98,8 +96,8 @@ export function Layout() {
       {/* Sidebar Mobile */}
       {sidebarOpen && (
         <div className="lg:hidden fixed inset-0 z-50">
-          <div 
-            className="absolute inset-0 bg-black/50" 
+          <div
+            className="absolute inset-0 bg-black/50"
             onClick={() => setSidebarOpen(false)}
           />
           <aside className="absolute left-0 top-0 h-full w-64 bg-slate-900 text-white">
@@ -124,8 +122,8 @@ export function Layout() {
                   className={({ isActive }: { isActive: boolean }) =>
                     `flex items-center gap-3 px-4 py-3 rounded-lg transition-colors ${
                       isActive
-                        ? 'bg-amber-500 text-slate-900 font-medium'
-                        : 'text-slate-300 hover:bg-slate-800 hover:text-white'
+                        ? "bg-amber-500 text-slate-900 font-medium"
+                        : "text-slate-300 hover:bg-slate-800 hover:text-white"
                     }`
                   }
                 >
@@ -152,20 +150,20 @@ export function Layout() {
       {/* Main Content */}
       <main className="flex-1 lg:ml-64">
         {/* Header Mobile */}
-        <header className="lg:hidden bg-slate-900 text-white p-4 flex items-center justify-between sticky top-0 z-40">
-          <div className="flex items-center gap-3">
+        <header className="lg:hidden bg-slate-900 text-white p-3 sm:p-4 flex items-center justify-between sticky top-0 z-40 shadow-lg">
+          <div className="flex items-center gap-2 sm:gap-3">
             <div className="w-8 h-8 bg-amber-500 rounded-lg flex items-center justify-center">
               <Wine className="w-5 h-5 text-slate-900" />
             </div>
-            <span className="font-bold">Depósito</span>
+            <span className="font-bold text-sm sm:text-base">Depósito</span>
           </div>
-          <button onClick={() => setSidebarOpen(true)}>
+          <button onClick={() => setSidebarOpen(true)} className="p-1">
             <Menu className="w-6 h-6" />
           </button>
         </header>
 
         {/* Page Content */}
-        <div className="p-6">
+        <div className="p-3 sm:p-4 md:p-6">
           <Outlet />
         </div>
       </main>

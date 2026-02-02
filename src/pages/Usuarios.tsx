@@ -1,40 +1,65 @@
-import { useState } from 'react';
-import { useCollection } from '@/hooks/useFirebase';
-import type { Usuario } from '@/types';
-import { Button } from '@/components/ui/button';
-import { Input } from '@/components/ui/input';
-import { Label } from '@/components/ui/label';
-import { Card, CardContent, CardHeader } from '@/components/ui/card';
-import { Badge } from '@/components/ui/badge';
-import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from '@/components/ui/dialog';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from '@/components/ui/table';
-import { Plus, Search, Trash2, Edit, UserCheck, UserX } from 'lucide-react';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '@/firebase/config';
+import { useState } from "react";
+import { useCollection } from "@/hooks/useFirebase";
+import type { Usuario } from "@/types";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
+import { Badge } from "@/components/ui/badge";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
+import { Plus, Search, Trash2, Edit, UserCheck, UserX } from "lucide-react";
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { auth } from "@/firebase/config";
 
 export function Usuarios() {
-  const { data: usuarios, add, update, remove } = useCollection<Usuario>('usuarios');
-  const [searchTerm, setSearchTerm] = useState('');
+  const {
+    data: usuarios,
+    add,
+    update,
+    remove,
+  } = useCollection<Usuario>("usuarios");
+  const [searchTerm, setSearchTerm] = useState("");
   const [isDialogOpen, setIsDialogOpen] = useState(false);
   const [editingUsuario, setEditingUsuario] = useState<Usuario | null>(null);
 
   // Form state
-  const [nome, setNome] = useState('');
-  const [email, setEmail] = useState('');
-  const [senha, setSenha] = useState('');
-  const [perfil, setPerfil] = useState<'admin' | 'vendedor'>('vendedor');
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [perfil, setPerfil] = useState<"admin" | "vendedor">("vendedor");
 
-  const filteredUsuarios = usuarios.filter(u => 
-    u.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
-    u.email.toLowerCase().includes(searchTerm.toLowerCase())
+  const filteredUsuarios = usuarios.filter(
+    (u) =>
+      u.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      u.email.toLowerCase().includes(searchTerm.toLowerCase()),
   );
 
   const resetForm = () => {
-    setNome('');
-    setEmail('');
-    setSenha('');
-    setPerfil('vendedor');
+    setNome("");
+    setEmail("");
+    setSenha("");
+    setPerfil("vendedor");
     setEditingUsuario(null);
   };
 
@@ -43,7 +68,7 @@ export function Usuarios() {
     setNome(usuario.nome);
     setEmail(usuario.email);
     setPerfil(usuario.perfil);
-    setSenha('');
+    setSenha("");
     setIsDialogOpen(true);
   };
 
@@ -53,12 +78,16 @@ export function Usuarios() {
     if (editingUsuario) {
       await update(editingUsuario.id, {
         nome,
-        perfil
+        perfil,
       });
     } else {
       // Criar usuário no Firebase Auth
-      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-      
+      const userCredential = await createUserWithEmailAndPassword(
+        auth,
+        email,
+        senha,
+      );
+
       // Adicionar dados do usuário no Firestore
       await add({
         id: userCredential.user.uid,
@@ -66,7 +95,7 @@ export function Usuarios() {
         email,
         perfil,
         ativo: true,
-        createdAt: new Date()
+        createdAt: new Date(),
       } as Usuario);
     }
 
@@ -79,31 +108,40 @@ export function Usuarios() {
   };
 
   const handleDelete = async (id: string) => {
-    if (confirm('Tem certeza que deseja excluir este usuário?')) {
+    if (confirm("Tem certeza que deseja excluir este usuário?")) {
       await remove(id);
     }
   };
 
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Usuários</h1>
-          <p className="text-slate-500 mt-1">Gerencie os usuários do sistema</p>
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+            Usuários
+          </h1>
+          <p className="text-sm sm:text-base text-slate-500 mt-1">
+            Gerencie os usuários do sistema
+          </p>
         </div>
-        <Dialog open={isDialogOpen} onOpenChange={(open) => {
-          if (!open) resetForm();
-          setIsDialogOpen(open);
-        }}>
+        <Dialog
+          open={isDialogOpen}
+          onOpenChange={(open) => {
+            if (!open) resetForm();
+            setIsDialogOpen(open);
+          }}
+        >
           <DialogTrigger asChild>
-            <Button className="bg-amber-500 hover:bg-amber-600 text-slate-900">
+            <Button className="bg-amber-500 hover:bg-amber-600 text-slate-900 w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Novo Usuário
             </Button>
           </DialogTrigger>
           <DialogContent className="max-w-md">
             <DialogHeader>
-              <DialogTitle>{editingUsuario ? 'Editar Usuário' : 'Novo Usuário'}</DialogTitle>
+              <DialogTitle>
+                {editingUsuario ? "Editar Usuário" : "Novo Usuário"}
+              </DialogTitle>
             </DialogHeader>
             <form onSubmit={handleSubmit} className="space-y-4">
               <div className="space-y-2">
@@ -144,7 +182,10 @@ export function Usuarios() {
 
               <div className="space-y-2">
                 <Label>Perfil</Label>
-                <Select value={perfil} onValueChange={(v) => setPerfil(v as 'admin' | 'vendedor')}>
+                <Select
+                  value={perfil}
+                  onValueChange={(v) => setPerfil(v as "admin" | "vendedor")}
+                >
                   <SelectTrigger>
                     <SelectValue />
                   </SelectTrigger>
@@ -156,11 +197,18 @@ export function Usuarios() {
               </div>
 
               <div className="flex gap-2 justify-end">
-                <Button type="button" variant="outline" onClick={() => setIsDialogOpen(false)}>
+                <Button
+                  type="button"
+                  variant="outline"
+                  onClick={() => setIsDialogOpen(false)}
+                >
                   Cancelar
                 </Button>
-                <Button type="submit" className="bg-amber-500 hover:bg-amber-600 text-slate-900">
-                  {editingUsuario ? 'Salvar Alterações' : 'Cadastrar Usuário'}
+                <Button
+                  type="submit"
+                  className="bg-amber-500 hover:bg-amber-600 text-slate-900"
+                >
+                  {editingUsuario ? "Salvar Alterações" : "Cadastrar Usuário"}
                 </Button>
               </div>
             </form>
@@ -169,61 +217,92 @@ export function Usuarios() {
       </div>
 
       <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-4">
-            <div className="relative flex-1 max-w-sm">
+        <CardHeader className="pb-3 p-3 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="relative flex-1 max-w-full sm:max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Buscar usuários..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 text-sm"
               />
             </div>
           </div>
         </CardHeader>
-        <CardContent>
+        <CardContent className="p-0 sm:p-6">
           <div className="overflow-x-auto">
             <Table>
               <TableHeader>
                 <TableRow>
-                  <TableHead>Nome</TableHead>
-                  <TableHead>Email</TableHead>
-                  <TableHead>Perfil</TableHead>
-                  <TableHead className="text-center">Status</TableHead>
-                  <TableHead className="w-32"></TableHead>
+                  <TableHead className="text-xs sm:text-sm">Nome</TableHead>
+                  <TableHead className="text-xs sm:text-sm hidden md:table-cell">Email</TableHead>
+                  <TableHead className="text-xs sm:text-sm">Perfil</TableHead>
+                  <TableHead className="text-center text-xs sm:text-sm hidden sm:table-cell">Status</TableHead>
+                  <TableHead className="w-20 sm:w-32"></TableHead>
                 </TableRow>
               </TableHeader>
               <TableBody>
                 {filteredUsuarios.map((usuario) => (
                   <TableRow key={usuario.id}>
-                    <TableCell className="font-medium">{usuario.nome}</TableCell>
-                    <TableCell>{usuario.email}</TableCell>
+                    <TableCell className="font-medium text-xs sm:text-sm truncate max-w-[120px] sm:max-w-none">
+                      {usuario.nome}
+                    </TableCell>
+                    <TableCell className="text-xs sm:text-sm hidden md:table-cell truncate max-w-[150px]">{usuario.email}</TableCell>
                     <TableCell>
-                      <Badge className={usuario.perfil === 'admin' ? 'bg-purple-100 text-purple-800' : 'bg-blue-100 text-blue-800'}>
-                        {usuario.perfil === 'admin' ? 'Administrador' : 'Vendedor'}
+                      <Badge
+                        className={
+                          usuario.perfil === "admin"
+                            ? "bg-purple-100 text-purple-800 text-xs"
+                            : "bg-blue-100 text-blue-800 text-xs"
+                        }
+                      >
+                        {usuario.perfil === "admin"
+                          ? "Admin"
+                          : "Vendedor"}
                       </Badge>
                     </TableCell>
-                    <TableCell className="text-center">
-                      <Badge className={usuario.ativo ? 'bg-emerald-100 text-emerald-800' : 'bg-red-100 text-red-800'}>
-                        {usuario.ativo ? 'Ativo' : 'Inativo'}
+                    <TableCell className="text-center hidden sm:table-cell">
+                      <Badge
+                        className={
+                          usuario.ativo
+                            ? "bg-emerald-100 text-emerald-800 text-xs"
+                            : "bg-red-100 text-red-800 text-xs"
+                        }
+                      >
+                        {usuario.ativo ? "Ativo" : "Inativo"}
                       </Badge>
                     </TableCell>
                     <TableCell>
-                      <div className="flex gap-1">
-                        <Button variant="ghost" size="sm" onClick={() => handleEdit(usuario)}>
-                          <Edit className="w-4 h-4" />
-                        </Button>
-                        <Button 
-                          variant="ghost" 
-                          size="sm" 
-                          onClick={() => handleToggleStatus(usuario)}
-                          title={usuario.ativo ? 'Desativar' : 'Ativar'}
+                      <div className="flex gap-0.5 sm:gap-1">
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleEdit(usuario)}
                         >
-                          {usuario.ativo ? <UserX className="w-4 h-4 text-amber-500" /> : <UserCheck className="w-4 h-4 text-emerald-500" />}
+                          <Edit className="w-3 h-3 sm:w-4 sm:h-4" />
                         </Button>
-                        <Button variant="ghost" size="sm" onClick={() => handleDelete(usuario.id)}>
-                          <Trash2 className="w-4 h-4 text-red-500" />
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleToggleStatus(usuario)}
+                          title={usuario.ativo ? "Desativar" : "Ativar"}
+                        >
+                          {usuario.ativo ? (
+                            <UserX className="w-3 h-3 sm:w-4 sm:h-4 text-amber-500" />
+                          ) : (
+                            <UserCheck className="w-3 h-3 sm:w-4 sm:h-4 text-emerald-500" />
+                          )}
+                        </Button>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          className="h-8 w-8 p-0"
+                          onClick={() => handleDelete(usuario.id)}
+                        >
+                          <Trash2 className="w-3 h-3 sm:w-4 sm:h-4 text-red-500" />
                         </Button>
                       </div>
                     </TableCell>

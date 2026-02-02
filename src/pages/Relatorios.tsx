@@ -87,63 +87,67 @@ export function Relatorios() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-4 sm:space-y-6">
       <div>
-        <h1 className="text-3xl font-bold text-slate-900">Relatórios</h1>
-        <p className="text-slate-500 mt-1">
+        <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">
+          Relatórios
+        </h1>
+        <p className="text-sm sm:text-base text-slate-500 mt-1">
           Visualize e exporte relatórios do seu negócio
         </p>
       </div>
 
       {/* Filtros */}
       <Card>
-        <CardHeader>
-          <CardTitle className="flex items-center gap-2">
-            <Calendar className="w-5 h-5" />
+        <CardHeader className="p-4 sm:p-6">
+          <CardTitle className="flex items-center gap-2 text-base sm:text-lg">
+            <Calendar className="w-4 h-4 sm:w-5 sm:h-5" />
             Período do Relatório
           </CardTitle>
         </CardHeader>
-        <CardContent>
-          <div className="flex flex-wrap gap-4 items-end">
-            <div className="space-y-2">
-              <Label>Data Início</Label>
+        <CardContent className="p-4 sm:p-6">
+          <div className="flex flex-col sm:flex-row flex-wrap gap-3 sm:gap-4 items-start sm:items-end">
+            <div className="space-y-2 w-full sm:w-auto">
+              <Label className="text-sm">Data Início</Label>
               <Input
                 type="date"
                 value={dataInicio}
                 onChange={(e) => setDataInicio(e.target.value)}
+                className="w-full"
               />
             </div>
-            <div className="space-y-2">
-              <Label>Data Fim</Label>
+            <div className="space-y-2 w-full sm:w-auto">
+              <Label className="text-sm">Data Fim</Label>
               <Input
                 type="date"
                 value={dataFim}
                 onChange={(e) => setDataFim(e.target.value)}
+                className="w-full"
               />
             </div>
-            <div className="flex gap-2">
+            <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
               <Button
                 variant="outline"
                 onClick={() => handleExportExcel("vendas")}
-                className="gap-2"
+                className="gap-2 text-xs sm:text-sm w-full sm:w-auto"
               >
-                <FileDown className="w-4 h-4" />
-                Exportar Vendas
+                <FileDown className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Exportar </span>Vendas
               </Button>
               <Button
                 variant="outline"
                 onClick={() => handleExportExcel("estoque")}
-                className="gap-2"
+                className="gap-2 text-xs sm:text-sm w-full sm:w-auto"
               >
-                <FileDown className="w-4 h-4" />
-                Exportar Estoque
+                <FileDown className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Exportar </span>Estoque
               </Button>
               <Button
                 onClick={() => handleExportExcel("completo")}
-                className="gap-2 bg-amber-500 hover:bg-amber-600 text-slate-900"
+                className="gap-2 bg-amber-500 hover:bg-amber-600 text-slate-900 text-xs sm:text-sm w-full sm:w-auto"
               >
-                <FileDown className="w-4 h-4" />
-                Exportar Completo
+                <FileDown className="w-3 h-3 sm:w-4 sm:h-4" />
+                <span className="hidden sm:inline">Exportar </span>Completo
               </Button>
             </div>
           </div>
@@ -151,29 +155,29 @@ export function Relatorios() {
       </Card>
 
       {/* Resumo */}
-      <div className="grid grid-cols-1 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium text-slate-500">
               Total de Vendas
             </CardTitle>
             <TrendingUp className="w-4 h-4 text-emerald-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">{vendasFiltradas.length}</div>
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-xl sm:text-2xl font-bold">{vendasFiltradas.length}</div>
             <p className="text-xs text-slate-500">vendas no período</p>
           </CardContent>
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium text-slate-500">
               Receita Total
             </CardTitle>
             <DollarSign className="w-4 h-4 text-amber-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-xl sm:text-2xl font-bold">
               {formatCurrency(totalVendas)}
             </div>
             <p className="text-xs text-slate-500">no período</p>
@@ -181,14 +185,14 @@ export function Relatorios() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium text-slate-500">
               Ticket Médio
             </CardTitle>
             <DollarSign className="w-4 h-4 text-blue-500" />
           </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold">
+          <CardContent className="p-4 sm:p-6">
+            <div className="text-xl sm:text-2xl font-bold">
               {formatCurrency(ticketMedio)}
             </div>
             <p className="text-xs text-slate-500">por venda</p>
@@ -196,8 +200,8 @@ export function Relatorios() {
         </Card>
 
         <Card>
-          <CardHeader className="flex flex-row items-center justify-between pb-2">
-            <CardTitle className="text-sm font-medium text-slate-500">
+          <CardHeader className="flex flex-row items-center justify-between pb-2 p-4 sm:p-6">
+            <CardTitle className="text-xs sm:text-sm font-medium text-slate-500">
               Produtos em Estoque
             </CardTitle>
             <Package className="w-4 h-4 text-purple-500" />

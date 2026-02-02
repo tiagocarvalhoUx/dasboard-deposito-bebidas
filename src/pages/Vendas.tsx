@@ -245,25 +245,25 @@ export function Vendas() {
     }
   };
   return (
-    <div className="space-y-6">
-      <div className="flex items-center justify-between">
+    <div className="space-y-4 sm:space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
         <div>
-          <h1 className="text-3xl font-bold text-slate-900">Vendas</h1>
-          <p className="text-slate-500 mt-1">
+          <h1 className="text-2xl sm:text-3xl font-bold text-slate-900">Vendas</h1>
+          <p className="text-sm sm:text-base text-slate-500 mt-1">
             Gerencie as vendas do seu depósito
           </p>
         </div>
         <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-amber-500 hover:bg-amber-600 text-slate-900">
+            <Button className="bg-amber-500 hover:bg-amber-600 text-slate-900 w-full sm:w-auto">
               <Plus className="w-4 h-4 mr-2" />
               Nova Venda
             </Button>
           </DialogTrigger>
-          <DialogContent className="max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
-            <DialogHeader className="border-b pb-4">
-              <DialogTitle className="flex items-center gap-2 text-2xl">
-                <ShoppingCart className="w-6 h-6 text-amber-500" />
+          <DialogContent className="max-w-[95vw] sm:max-w-6xl max-h-[95vh] overflow-hidden flex flex-col">
+            <DialogHeader className="border-b pb-3 sm:pb-4">
+              <DialogTitle className="flex items-center gap-2 text-xl sm:text-2xl">
+                <ShoppingCart className="w-5 h-5 sm:w-6 sm:h-6 text-amber-500" />
                 Nova Venda
               </DialogTitle>
             </DialogHeader>
@@ -272,12 +272,12 @@ export function Vendas() {
               onSubmit={handleSubmit}
               className="flex-1 overflow-hidden flex flex-col"
             >
-              <div className="flex-1 overflow-y-auto space-y-4 pr-2">
+              <div className="flex-1 overflow-y-auto space-y-3 sm:space-y-4 pr-1 sm:pr-2">
                 {/* Cliente Info - Compacto */}
                 <Card className="bg-slate-50">
-                  <CardContent className="pt-4">
-                    <div className="grid grid-cols-3 gap-3">
-                      <div className="col-span-2">
+                  <CardContent className="pt-3 sm:pt-4 p-3 sm:p-6">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2 sm:gap-3">
+                      <div className="sm:col-span-2">
                         <Label className="text-xs font-semibold text-slate-600">
                           Cliente
                         </Label>
@@ -557,71 +557,73 @@ export function Vendas() {
       </div>
 
       <Card>
-        <CardHeader className="pb-3">
-          <div className="flex items-center gap-4">
-            <div className="relative flex-1 max-w-sm">
+        <CardHeader className="pb-3 p-3 sm:p-6">
+          <div className="flex items-center gap-2 sm:gap-4">
+            <div className="relative flex-1 max-w-full sm:max-w-sm">
               <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400" />
               <Input
                 placeholder="Buscar vendas..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="pl-10"
+                className="pl-10 text-sm"
               />
             </div>
           </div>
         </CardHeader>
-        <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow>
-                <TableHead>Nº</TableHead>
-                <TableHead>Cliente</TableHead>
-                <TableHead>Data</TableHead>
-                <TableHead>Vendedor</TableHead>
-                <TableHead>Pagamento</TableHead>
-                <TableHead className="text-right">Total</TableHead>
-                <TableHead className="text-center">Status</TableHead>
-                <TableHead className="text-center">Ações</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {filteredVendas.map((venda) => (
-                <TableRow key={venda.id}>
-                  <TableCell className="font-medium">{venda.numero}</TableCell>
-                  <TableCell>{venda.clienteNome}</TableCell>
-                  <TableCell>{formatDate(venda.dataVenda)}</TableCell>
-                  <TableCell>{venda.vendedorNome}</TableCell>
-                  <TableCell>
-                    {formatarFormaPagamento(venda.formaPagamento)}
-                  </TableCell>
-                  <TableCell className="text-right font-medium">
-                    {formatCurrency(venda.total)}
-                  </TableCell>
-                  <TableCell className="text-center">
+        <CardContent className="p-0 sm:p-6">
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead className="text-xs sm:text-sm">Nº</TableHead>
+                  <TableHead className="text-xs sm:text-sm">Cliente</TableHead>
+                  <TableHead className="text-xs sm:text-sm hidden md:table-cell">Data</TableHead>
+                  <TableHead className="text-xs sm:text-sm hidden lg:table-cell">Vendedor</TableHead>
+                  <TableHead className="text-xs sm:text-sm hidden md:table-cell">Pagamento</TableHead>
+                  <TableHead className="text-right text-xs sm:text-sm">Total</TableHead>
+                  <TableHead className="text-center text-xs sm:text-sm hidden sm:table-cell">Status</TableHead>
+                  <TableHead className="text-center text-xs sm:text-sm">Ações</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {filteredVendas.map((venda) => (
+                  <TableRow key={venda.id}>
+                    <TableCell className="font-medium text-xs sm:text-sm">{venda.numero}</TableCell>
+                    <TableCell className="text-xs sm:text-sm truncate max-w-[100px] sm:max-w-none">{venda.clienteNome}</TableCell>
+                    <TableCell className="text-xs sm:text-sm hidden md:table-cell">{formatDate(venda.dataVenda)}</TableCell>
+                    <TableCell className="text-xs sm:text-sm hidden lg:table-cell truncate max-w-[120px]">{venda.vendedorNome}</TableCell>
+                    <TableCell className="text-xs sm:text-sm hidden md:table-cell">
+                      {formatarFormaPagamento(venda.formaPagamento)}
+                    </TableCell>
+                    <TableCell className="text-right font-medium text-xs sm:text-sm whitespace-nowrap">
+                      {formatCurrency(venda.total)}
+                    </TableCell>
+                    <TableCell className="text-center hidden sm:table-cell">
                     <Badge className={getStatusBadgeClass(venda.status)}>
                       {formatarStatus(venda.status)}
                     </Badge>
                   </TableCell>
                   <TableCell>
-                    <div className="flex gap-2 justify-center">
+                    <div className="flex gap-1 sm:gap-2 justify-center">
                       <Dialog>
                         <DialogTrigger asChild>
                           <Button
                             variant="ghost"
                             size="sm"
                             title="Ver detalhes"
+                            className="h-8 w-8 p-0"
                           >
-                            <Eye className="w-4 h-4" />
+                            <Eye className="w-3 h-3 sm:w-4 sm:h-4" />
                           </Button>
                         </DialogTrigger>
-                        <DialogContent>
+                        <DialogContent className="max-w-[95vw] sm:max-w-2xl max-h-[90vh] overflow-y-auto">
                           <DialogHeader>
-                            <DialogTitle>
+                            <DialogTitle className="text-lg sm:text-xl">
                               Detalhes da Venda {venda.numero}
                             </DialogTitle>
                           </DialogHeader>
-                          <div className="space-y-4">
-                            <div className="grid grid-cols-2 gap-4 text-sm">
+                          <div className="space-y-3 sm:space-y-4">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 sm:gap-4 text-xs sm:text-sm">
                               <div>
                                 <span className="text-slate-500">Cliente:</span>
                                 <p className="font-medium">
@@ -751,6 +753,7 @@ export function Vendas() {
               ))}
             </TableBody>
           </Table>
+          </div>
         </CardContent>
       </Card>
     </div>

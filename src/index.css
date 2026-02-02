@@ -73,3 +73,31 @@
     @apply bg-background text-foreground;
   }
 }
+
+@layer utilities {
+  /* Melhorias de responsividade para mobile */
+  .touch-manipulation {
+    touch-action: manipulation;
+  }
+  
+  /* Previne zoom em inputs no iOS */
+  @supports (-webkit-touch-callout: none) {
+    input, select, textarea {
+      font-size: 16px;
+    }
+  }
+  
+  /* Melhora scroll em mobile */
+  .overflow-touch {
+    -webkit-overflow-scrolling: touch;
+  }
+  
+  /* Oculta scrollbar mas mantém funcionalidade */
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+}
