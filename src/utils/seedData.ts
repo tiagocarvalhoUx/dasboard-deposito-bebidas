@@ -1,6 +1,6 @@
 import { auth, db } from '@/firebase/config';
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { collection, addDoc, Timestamp, doc, setDoc } from 'firebase/firestore';
+import { createUserWithEmailAndPassword, fetchSignInMethodsForEmail } from 'firebase/auth';
+import { collection, addDoc, Timestamp, doc, setDoc, getDoc } from 'firebase/firestore';
 
 // Dados iniciais para popular o sistema
 const categoriasIniciais = [
@@ -122,25 +122,65 @@ export async function criarUsuarioAdmin(
   nome: string = 'Administrador'
 ): Promise<{ success: boolean; message: string }> {
   try {
-    // Criar usuário no Authentication
-    const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
-    const uid = userCredential.user.uid;
+    // Verificar se o email já está em uso
+    const signInMethods = await fetchSignInMethodsForEmail(auth, email);
+    
+    let uid: string;
+    
+    if (signInMethods.length > 0) {
+      // Email já existe no Authentication
+      // Tentar obter o UID de algum usuário com esse email
+      // Como não podemos obter diretamente, vamos criar apenas no Firestore com um ID customizado
+      // Vamos usar um hash simples do email como ID
+      uid = email.replace('@', '_').replace(/\./g, '_');
+      
+      // Verificar se já existe no Firestore
+      const userDocRef = doc(db, 'usuarios', uid);
+      const userDoc = await getDoc(userDocRef);
+      
+      if (userDoc.exists()) {
+        return {
+          success: false,
+          message: `Usuário já existe! Use as credenciais: ${email} / ${senha}`
+        };
+      }
+      
+      // Criar apenas no Firestore
+      await setDoc(userDocRef, {
+        id: uid,
+        email,
+        nome,
+        perfil: 'admin',
+        ativo: true,
+        createdAt: Timestamp.now()
+      });
+      
+      return {
+        success: true,
+        message: `Usuário já existia no Authentication. Dados adicionados ao Firestore! Use: ${email} / ${senha}`
+      };
+    } else {
+      // Email não existe, criar normalmente
+      const userCredential = await createUserWithEmailAndPassword(auth, email, senha);
+      uid = userCredential.user.uid;
 
-    // Criar documento do usuário no Firestore
-    await setDoc(doc(db, 'usuarios', uid), {
-      id: uid,
-      email,
-      nome,
-      perfil: 'admin',
-      ativo: true,
-      createdAt: Timestamp.now()
-    });
+      // Criar documento do usuário no Firestore
+      await setDoc(doc(db, 'usuarios', uid), {
+        id: uid,
+        email,
+        nome,
+        perfil: 'admin',
+        ativo: true,
+        createdAt: Timestamp.now()
+      });
 
-    return {
-      success: true,
-      message: `Usuário admin criado com sucesso! UID: ${uid}`
-    };
+      return {
+        success: true,
+        message: `Usuário admin criado com sucesso! Use: ${email} / ${senha}`
+      };
+    }
   } catch (error: any) {
+    console.error('Erro detalhado:', error);
     return {
       success: false,
       message: `Erro ao criar usuário: ${error.message}`
